@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <string>
 #include <thread>
 
 struct MemInfo {
@@ -65,6 +66,15 @@ struct MemInfo {
   float Process;
 };
 
+struct Iostat {
+  unsigned int User;
+  unsigned int Nice;
+  unsigned int System;
+  unsigned int Iowait;
+  unsigned int Steal;
+  unsigned int Idle;
+};
+
 void trim(std::string &s) {
   s.erase(0, s.find_first_not_of(" \t\n"));
   s.erase(s.find_last_not_of(" \t\n") + 1);
@@ -109,7 +119,7 @@ int main() {
     auto memUsed = (meminform.MemTotal - (meminform.MemFree + meminform.Cached)) / 1024 / 1024;
     auto memUsedWithCache = (meminform.MemTotal - meminform.MemFree) / 1024 / 1024;
 
-    printf("%.2f/%.2f/%.2f\n", memUsed,  meminform.Cached / 1024 / 1024, memUsedWithCache);
+    printf("| IOWAIT %.2f | MEM %.2f/%.2f/%.2f\n", 1.0, memUsed,  meminform.Cached / 1024 / 1024, memUsedWithCache);
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
